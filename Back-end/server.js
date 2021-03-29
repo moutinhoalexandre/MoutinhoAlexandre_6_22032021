@@ -1,6 +1,7 @@
-const http = require("http");
+const http = require("http");// permet d'utiliser le serveur http
 const app = require("./app");
 
+//Permet de retourner un port valide, quil soit obtenu sous la forme du nombre ou d'une chaine de caractères
 const normalizePort = (val) => {
   const port = parseInt(val, 10);
 
@@ -13,8 +14,9 @@ const normalizePort = (val) => {
   return false;
 };
 const port = normalizePort(process.env.PORT || "3000");
-app.set("port", port);
+app.set("port", port);//On indique qu'elle port utiliser dans app.js
 
+//Permet de renvoyer les erreurs afin de les traiter
 const errorHandler = (error) => {
   if (error.syscall !== "listen") {
     throw error;
@@ -36,10 +38,10 @@ const errorHandler = (error) => {
   }
 };
 
-const server = http.createServer(app);
+const server = http.createServer(app);//Construit le serveur avec le protocol http et en utilisant app.js
 
-server.on("error", errorHandler);
-server.on("listening", () => {
+server.on("error", errorHandler);//lance le gestionnaire d'erreurs
+server.on("listening", () => { //lance le serveur et affiche les infos de connexion dans la console
   const address = server.address();
   const bind = typeof address === "string" ? "pipe " + address : "port " + port;
   console.log("Listening on " + bind);
