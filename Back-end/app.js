@@ -4,7 +4,7 @@ const mongoose = require("mongoose"); //Importe mongoose qui permet la création
 const app = express(); //Applique le framework express
 
 mongoose //Connecte l'API à la base de données mongoDB grâce à mongoose
-  .connect(
+  .connect( //TODO : penser a déplacer dans un fichier .env
     "mongodb+srv://userP6:piquanteP6@cluster0.6vps7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
