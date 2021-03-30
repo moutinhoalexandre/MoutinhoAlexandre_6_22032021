@@ -1,11 +1,14 @@
 const express = require("express"); //Import du framework express pour node.js
 const mongoose = require("mongoose"); //Importe mongoose qui permet la création de modèle pour mongoDb
+require('dotenv').config();//Permet de créer un environnement de variables
+
 
 const app = express(); //Applique le framework express
 
 mongoose //Connecte l'API à la base de données mongoDB grâce à mongoose
-  .connect( //TODO : penser a déplacer dans un fichier .env
-    "mongodb+srv://userP6:piquanteP6@cluster0.6vps7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+  .connect(
+    //TODO : penser a déplacer dans un fichier .env
+    `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}.6vps7.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => console.log("Connexion à MongoDB réussie !"))
