@@ -7,7 +7,6 @@ const app = express(); //Applique le framework express
 
 mongoose //Connecte l'API à la base de données mongoDB grâce à mongoose
   .connect(
-    //TODO : penser a déplacer dans un fichier .env
     `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}.6vps7.mongodb.net/${process.env.MONGO_DATABASE}?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true }
   )
