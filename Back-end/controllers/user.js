@@ -1,11 +1,12 @@
-const bcrypt = require('bcrypt');//Sert à hasher et saler les mots de passe
+const bcrypt = require("bcrypt"); //Permet de hasher et saler les mots de passe
+const jwt = require("jsonwebtoken"); //Permet de créer un token utilisateur
 
-const User = require('../models/user');
+const User = require("../models/user");
 
-//Enregistre un nouvel utilisateur
+//Enregistrement d'un nouvel utilisateur
 exports.signup = (req, res, next) => {
   bcrypt
-    .hash(req.body.password, 10)//On hash le mot de passe et on le sale 10 fois
+    .hash(req.body.password, 10) //On hash le mot de passe et on le sale 10 fois
     .then((hash) => {
       const user = new User({
         email: req.body.email,
@@ -19,7 +20,7 @@ exports.signup = (req, res, next) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-//Connecte un utlisateur existant
+//Connection d'un utlisateur existant
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email }) //On cherche l'email correspondant dans la collection
     .then((user) => {
@@ -34,7 +35,11 @@ exports.login = (req, res, next) => {
           }
           res.status(200).json({
             userId: user._id,
-            token: "TOKEN",
+            token: jwt.sign(//On attribue un token d'authentification
+              { userId: user._id },
+              process.env.JWT_SECRET_TOKEN,
+              { expiresIn: "24h" }
+            ),
           });
         })
         .catch((error) => res.status(500).json({ error }));
