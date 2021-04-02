@@ -2,6 +2,8 @@ const express = require("express"); //Import du framework express pour node.js
 const mongoose = require("mongoose"); //Importe mongoose qui permet la création de modèle pour mongoDb
 require('dotenv').config();//Permet de créer un environnement de variables
 
+const sauceRoutes = require('./routes/sauce');//Importe le routeur pour les sauces
+const userRoutes = require('./routes/user');//Importe le routeur pour les utilisateurs
 
 const app = express(); //Applique le framework express
 
@@ -31,5 +33,9 @@ app.use((req, res, next) => {
 
 //Permet de récupérer le corps de la requête au format json
 app.use(express.json());
+
+
+app.use('/api/sauces', sauceRoutes);//Sert les routes concernant les sauces pour toutes demande vers le endpoint /api/sauces
+app.use('/api/auth',authenticationLimiter, userRoutes);//Sert les routes concernant les utilisateurs pour toutes demande vers le endpoint /api/auth
 
 module.exports = app;
