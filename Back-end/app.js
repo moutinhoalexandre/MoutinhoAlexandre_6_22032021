@@ -36,6 +36,6 @@ app.use(express.json());
 
 
 app.use('/api/sauces', sauceRoutes);//Sert les routes concernant les sauces pour toutes demande vers le endpoint /api/sauces
-app.use('/api/auth',authenticationLimiter, userRoutes);//Sert les routes concernant les utilisateurs pour toutes demande vers le endpoint /api/auth
+app.use('/api/auth', userRoutes);//Sert les routes concernant les utilisateurs pour toutes demande vers le endpoint /api/auth
 
 module.exports = app;
