@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();//Permet de charger le middleware niveau routeur
 
 const sauceCtrl = require('../controllers/sauce');//On appelle la logique métier de nos routes
+const auth = require("../middleware/auth");//On appelle le middleware d'authentification
 
 router.post('/', sauceCtrl.createSauce);//Permet de créer une sauce
 router.put('/:id', sauceCtrl.modifySauce);//Permet de modifier une sauce existante
