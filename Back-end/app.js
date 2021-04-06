@@ -1,5 +1,6 @@
 const express = require("express"); //Import du framework express pour node.js
 const mongoose = require("mongoose"); //Importe mongoose qui permet la création de modèle pour mongoDb
+const helmet = require("helmet");//Importe helmet pour sécuriser les en-têtes des requêtes
 const path = require('path');//Permet d'accéder aux chemins d'accès des fichiers
 require('dotenv').config();//Permet de créer un environnement de variables
 
@@ -7,6 +8,7 @@ const sauceRoutes = require('./routes/sauce');//Importe le routeur pour les sauc
 const userRoutes = require('./routes/user');//Importe le routeur pour les utilisateurs
 
 const app = express(); //Applique le framework express
+app.use(helmet());//Applique les sous-plugins de helmet
 
 mongoose //Connecte l'API à la base de données mongoDB grâce à mongoose
   .connect(
