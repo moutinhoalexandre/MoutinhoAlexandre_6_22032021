@@ -1,5 +1,6 @@
 const express = require("express"); //Import du framework express pour node.js
 const mongoose = require("mongoose"); //Importe mongoose qui permet la création de modèle pour mongoDb
+const path = require('path');//Permet d'accéder aux chemins d'accès des fichiers
 require('dotenv').config();//Permet de créer un environnement de variables
 
 const sauceRoutes = require('./routes/sauce');//Importe le routeur pour les sauces
@@ -34,6 +35,7 @@ app.use((req, res, next) => {
 //Permet de récupérer le corps de la requête au format json
 app.use(express.json());
 
+app.use('/images', express.static(path.join(__dirname, 'images')));//Permet de servir les fichiers statiques, présents dans le dossier images
 
 app.use('/api/sauces', sauceRoutes);//Sert les routes concernant les sauces pour toutes demande vers le endpoint /api/sauces
 app.use('/api/auth', userRoutes);//Sert les routes concernant les utilisateurs pour toutes demande vers le endpoint /api/auth
