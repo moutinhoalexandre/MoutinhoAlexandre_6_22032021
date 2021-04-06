@@ -72,3 +72,23 @@ exports.getAllSauces = (req, res, next) => {
     .then((sauces) => res.status(200).json(sauces))
     .catch((error) => res.status(400).json({ error }));
 };
+
+//like_dislike une sauce
+// TODO: systeme de like
+// exports.like = (req, res, next) => {
+//     console.log(req.body)
+//   switch () {
+//     // L'utilisateur aime la sauce on incrémente les likes et on ajoute l'utilisateur au tableau usersLiked
+//     case 1:
+      
+//       break;
+//     // L'utilisateur n'aime pas la sauce on incrémente les dislikes et on ajoute au tableau userDisliked
+//     case -1:
+      
+//       break;
+
+//     //On verifie le précédent choix de l'User et remet à 0
+//     case 0:
+
+//   }
+// };
