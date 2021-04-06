@@ -1,6 +1,7 @@
 const express = require("express"); //Import du framework express pour node.js
 const mongoose = require("mongoose"); //Importe mongoose qui permet la création de modèle pour mongoDb
 const helmet = require("helmet");//Importe helmet pour sécuriser les en-têtes des requêtes
+const mongoSanitize = require('express-mongo-sanitize');//Sert à empêcher l'injection de code dans les champs utilisateurs
 const path = require('path');//Permet d'accéder aux chemins d'accès des fichiers
 require('dotenv').config();//Permet de créer un environnement de variables
 
@@ -36,6 +37,9 @@ app.use((req, res, next) => {
 
 //Permet de récupérer le corps de la requête au format json
 app.use(express.json());
+
+//Nettoie les champs utilisateurs des tentatives d'injection de code commençant par $ ou "."
+app.use(mongoSanitize())
 
 app.use('/images', express.static(path.join(__dirname, 'images')));//Permet de servir les fichiers statiques, présents dans le dossier images
 
