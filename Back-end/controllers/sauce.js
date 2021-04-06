@@ -1,4 +1,5 @@
 const Sauce = require("../models/sauce"); //On importe le modèle de sauce
+const fs = require('fs'); //système de gestion de fichier de Node
 
 //Créer une sauce
 exports.createSauce = (req, res, next) => {
@@ -33,10 +34,17 @@ exports.modifySauce = (req, res, next) => {
 
 //Supprime une sauce
 exports.deleteSauce = (req, res, next) => {
-  Sauce.deleteOne({ _id: req.params.id })
-    .then(() => res.status(200).json({ message: "Sauce supprimé !" }))
-    .catch((error) => res.status(400).json({ error }));
-};
+  Sauce.findOne({ _id: req.params.id})//Trouve la sauce correspondant à l'id
+    .then(sauce => {
+      const filename = sauce.imageUrl.split('/images/')[1];
+      fs.unlink(`images/${filename}`, () => {//on supprime l'image du dossier images
+        Sauce.deleteOne({ _id: req.params.id })//et supprime la sauce de la collection
+          .then(() => res.status(200).json({ message: 'Sauce supprimée !'}))
+          .catch(error => res.status(400).json({ error }));
+      })
+    })
+    .catch(error => res.status(500).json({ error }));
+}
 
 //Récupère une sauce
 exports.getOneSauce = (req, res, next) => {
