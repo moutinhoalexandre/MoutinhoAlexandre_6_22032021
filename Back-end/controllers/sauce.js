@@ -22,7 +22,8 @@ exports.modifySauce = (req, res, next) => {
   if (req.file) {
     Sauce.findOne({ _id: req.params.id }).then((sauce) => {
       const fileName = sauce.imageUrl.split("/images/")[1];
-      fs.unlink(`images/${fileName}`, (err) => {//On supprime l'ancienne image
+      fs.unlink(`images/${fileName}`, (err) => {
+        //On supprime l'ancienne image
         if (err) throw err;
         console.log("Image supprimée: " + fileName);
       });
@@ -73,22 +74,72 @@ exports.getAllSauces = (req, res, next) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
-//like_dislike une sauce
-// TODO: systeme de like
-// exports.like = (req, res, next) => {
-//     console.log(req.body)
-//   switch () {
-//     // L'utilisateur aime la sauce on incrémente les likes et on ajoute l'utilisateur au tableau usersLiked
-//     case 1:
-      
-//       break;
-//     // L'utilisateur n'aime pas la sauce on incrémente les dislikes et on ajoute au tableau userDisliked
-//     case -1:
-      
-//       break;
+exports.likeDislikeSauce = (req, res, next) => {
+  const like = req.body.like;
+  const userId = req.body.userId;
+  const id = req.params.id;
 
-//     //On verifie le précédent choix de l'User et remet à 0
-//     case 0:
+  //Définit le statut de like (1,-1,0,defaut)
+  switch (like) {
+    case 1: //L'utilisateur aime la sauce
+      Sauce.updateOne(
+        { _id: id },
+        {
+          $inc: { likes: 1 }, //On incrémente les likes
+          $push: { usersLiked: userId }, //On ajoute l'utilisateur au tableau usersLiked
+        }
+      )
+        .then(() =>
+          res.status(200).json({ message: `Vous aimez la sauce ${sauce.name}` })
+        )
+        .catch((error) => res.status(400).json({ error }));
+      break;
+    case -1: //L'utilisateur n'aime pas la sauce
+      Sauce.updateOne(
+        { _id: id },
+        {
+          $inc: { dislikes: 1 }, //On incrémente les dislikes
+          $push: { usersDisliked: userId }, //On ajoute l'utilisateur au tableau usersDisliked
+        }
+      )
+        .then(() =>
+          res.status(200).json({ message: `Vous n'aimez pas la sauce ${sauce.name}` })
+        )
+        .catch((error) => res.status(400).json({ error }));
+      break;
+    case 0:
+      Sauce.findOne({ _id: id })
+        .then((sauce) => {
+          if (sauce.usersLiked.includes(userId)) {
+            Sauce.updateOne(
+              { _id: id },
+              {
+                $inc: { likes: -1 }, //On décrémente likes
+                $pull: { usersLiked: userId }, //On sort l'utilisateur du tableau usersLiked
+              }
+            )
+              .then(() => res.status(200).json({ message: "Vote annulé  pour la sauce ${sauce.name}" })
+              )
+              .catch((error) => res.status(400).json({ error }));
+          }
+          if (sauce.usersDisliked.includes(userId)) {
+            Sauce.updateOne(
+              { _id: id },
+              {
+                $inc: { dislikes: -1 }, //On décrémentes dislikes
+                $pull: { usersDisliked: userId }, //On sort l'utilisateur du tableau usersDisliked
+              }
+            )
+              .then(() =>res.status(200).json({ message: "Vote annulé  pour la sauce ${sauce.name}" })
+              )
+              .catch((error) => res.status(400).json({ error }));
+          }
+        })
+        .catch((error) => res.status(500).json({ error }));
+      break;
 
-//   }
-// };
+    default:
+      alert("Veuillez contacter l'administrateur du site");
+      break;
+  }
+};

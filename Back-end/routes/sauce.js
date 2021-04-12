@@ -5,10 +5,13 @@ const sauceCtrl = require('../controllers/sauce');//On appelle la logique métie
 const auth = require("../middleware/auth");//On appelle le middleware d'authentification
 const multer = require('../middleware/multer-config');//On appelle le middleware pour la gestion des images
 
-router.post('/', auth, multer, sauceCtrl.createSauce);//Créer une sauce
-router.put('/:id', auth, multer, sauceCtrl.modifySauce);//Modifier une sauce existante
-router.delete('/:id', auth, sauceCtrl.deleteSauce);//Supprimer une sauce
-router.get('/:id', auth, sauceCtrl.getOneSauce);//Récupèrer une seule sauce
-router.get('/', auth, sauceCtrl.getAllSauces);//Récupèrer toutes les sauces
+
+//Lier les routes aux controllers
+router.post('/', auth, multer, sauceCtrl.createSauce);// C Créer une sauce
+router.post("/:id/like", auth, sauceCtrl.likeDislikeSauce);// C Like et dislike une sauce
+router.get('/:id', auth, sauceCtrl.getOneSauce);// R Récupèrer une seule sauce
+router.get('/', auth, sauceCtrl.getAllSauces);// R Récupèrer toutes les sauces
+router.put('/:id', auth, multer, sauceCtrl.modifySauce);// U Modifier une sauce existante
+router.delete('/:id', auth, sauceCtrl.deleteSauce);// D Supprimer une sauce
 
 module.exports = router;
