@@ -1,12 +1,9 @@
 const express = require("express"); //Import du framework express pour node.js
 const mongoose = require("mongoose"); //Importe mongoose qui permet la création de modèle pour mongoDb
 const helmet = require("helmet");//Importe helmet pour sécuriser les en-têtes des requêtes
-const mongoSanitize = require('express-mongo-sanitize');//Sert à empêcher l'injection de code dans les champs utilisateurs
+const mongoSanitize = require('express-mongo-sanitize');//Import mongo-sanize qui sert à empêcher l'injection de code dans les champs utilisateurs
 const path = require('path');//Permet d'accéder aux chemins d'accès des fichiers
 require('dotenv').config();//Permet de créer un environnement de variables
-
-const rateLimit = require("express-rate-limit");
-// TODO:limiter nombre de requete et temps entre chaque modification
 
 const sauceRoutes = require('./routes/sauce');//Importe le routeur pour les sauces
 const userRoutes = require('./routes/user');//Importe le routeur pour les utilisateurs
