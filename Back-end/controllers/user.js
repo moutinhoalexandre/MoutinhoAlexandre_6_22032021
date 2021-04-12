@@ -4,23 +4,38 @@ const MaskData = require("../node_modules/maskdata");
 
 const User = require("../models/user");
 
+const passwordValidator = require("password-validator");
+const schema = new passwordValidator(); //On crée un schema pour obtenir des mots de passe plus sécurisés
+schema
+  .is().min(8) // min 8 caractères
+  .has().digits(1) // min 1 chiffre
+  .has().uppercase(1) // min 1 caractère majuscule
+  .has().lowercase(1) // min 1 caractère minuscule
+  .has().symbols(1) // min 1 symbole
+  .has().not().spaces(); // ne doit pas contenir d'espace
+
 //On masque l'email
 const emailMask2Options = {
-    maskWith: "*", 
-    unmaskedStartCharactersBeforeAt: 0,
-    unmaskedEndCharactersAfterAt: 0,
-    maskAtTheRate: false
+  maskWith: "*",
+  unmaskedStartCharactersBeforeAt: 0,
+  unmaskedEndCharactersAfterAt: 0,
+  maskAtTheRate: false,
 };
 
 //Output: ********@**********
 
 //Enregistrement d'un nouvel utilisateur
 exports.signup = (req, res, next) => {
+  if (!schema.validate(req.body.password)) {
+    //Renvoie une erreur si le schema de mot de passe n'est pas respecté
+    res.status(401).json({ message: "Mot de passe pas assez sécurisé, il doit contenir au moins 8 caractères, un chiffre, une majuscule, une minuscule, un symbole et ne pas contenir d'espace !" });
+    return false;
+  }
   bcrypt
     .hash(req.body.password, 10) //On hash le mot de passe et on le sale 10 fois
     .then((hash) => {
       const user = new User({
-        email: MaskData.maskEmail2(req.body.email, emailMask2Options),//l'email masqué
+        email: MaskData.maskEmail2(req.body.email, emailMask2Options), //l'email masqué
         password: hash, //le mot de passe crypté
       });
       user
