@@ -1,5 +1,6 @@
 const Sauce = require("../models/sauce"); //On importe le modèle de sauce
 const fs = require("fs"); //système de gestion de fichier de Node
+const sauce = require("../models/sauce");
 
 //Créer une sauce
 exports.createSauce = (req, res, next) => {
@@ -7,13 +8,11 @@ exports.createSauce = (req, res, next) => {
   delete sauceObject._id; //retire l'id généré automatiquement par MongoDb
   const sauce = new Sauce({
     ...sauceObject, //Utilise l'opérateur spread pour copier les infos du corps de la requête
-    imageUrl: `${req.protocol}://${req.get("host")}/images/${
-      req.file.filename
-    }`, //On génère l'url par rapport à son nom de fichier
+    imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`, //On génère l'url par rapport à son nom de fichier
   });
   sauce
     .save() //Sauvegarde la nouvelle sauce dans la bdd
-    .then(() => res.status(201).json({ message: "Sauce enregistrée !" }))
+    .then(() => res.status(201).json({ message: `Sauce enregistrée !` }))
     .catch((error) => res.status(400).json({ error }));
 };
 
@@ -29,19 +28,16 @@ exports.modifySauce = (req, res, next) => {
       });
     });
   }
-  const sauceObject = req.file
-    ? {
+  const sauceObject = req.file? {
         ...JSON.parse(req.body.sauce),
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`,
       }
     : { ...req.body };
   Sauce.updateOne(
     { _id: req.params.id },
     { ...sauceObject, _id: req.params.id }
   )
-    .then(() => res.status(200).json({ message: "Sauce modifiée !" }))
+    .then(() => res.status(200).json({ message: `Sauce modifiée !` }))
     .catch((error) => res.status(404).json({ error }));
 };
 
@@ -53,7 +49,7 @@ exports.deleteSauce = (req, res, next) => {
       fs.unlink(`images/${filename}`, () => {
         //on supprime l'image du dossier images
         Sauce.deleteOne({ _id: req.params.id }) //et supprime la sauce de la collection
-          .then(() => res.status(200).json({ message: "Sauce supprimée !" }))
+          .then(() => res.status(200).json({ message: `Sauce supprimée !` }))
           .catch((error) => res.status(400).json({ error }));
       });
     })
@@ -89,8 +85,7 @@ exports.likeDislikeSauce = (req, res, next) => {
           $push: { usersLiked: userId }, //On ajoute l'utilisateur au tableau usersLiked
         }
       )
-        .then(() =>
-          res.status(200).json({ message: `Vous aimez la sauce ${sauce.name}` })
+        .then(() =>res.status(201).json({ message: `Vous aimez la sauce` })
         )
         .catch((error) => res.status(400).json({ error }));
       break;
@@ -102,8 +97,7 @@ exports.likeDislikeSauce = (req, res, next) => {
           $push: { usersDisliked: userId }, //On ajoute l'utilisateur au tableau usersDisliked
         }
       )
-        .then(() =>
-          res.status(200).json({ message: `Vous n'aimez pas la sauce ${sauce.name}` })
+        .then(() =>res.status(200).json({ message: `Vous n'aimez pas la sauce` })
         )
         .catch((error) => res.status(400).json({ error }));
       break;
@@ -116,10 +110,11 @@ exports.likeDislikeSauce = (req, res, next) => {
               {
                 $inc: { likes: -1 }, //On décrémente likes
                 $pull: { usersLiked: userId }, //On sort l'utilisateur du tableau usersLiked
+                _id: req.params.id,
               }
             )
-              .then(() => res.status(200).json({ message: "Vote annulé  pour la sauce ${sauce.name}" })
-              )
+              .then(() => {res.status(200).json({ message: `Vote annulé  pour la sauce ${sauce.name}` });
+              })
               .catch((error) => res.status(400).json({ error }));
           }
           if (sauce.usersDisliked.includes(userId)) {
@@ -130,7 +125,7 @@ exports.likeDislikeSauce = (req, res, next) => {
                 $pull: { usersDisliked: userId }, //On sort l'utilisateur du tableau usersDisliked
               }
             )
-              .then(() =>res.status(200).json({ message: "Vote annulé  pour la sauce ${sauce.name}" })
+              .then(() =>res.status(200).json({ message: `Vote annulé  pour la sauce ${sauce.name}` })
               )
               .catch((error) => res.status(400).json({ error }));
           }
@@ -139,7 +134,7 @@ exports.likeDislikeSauce = (req, res, next) => {
       break;
 
     default:
-      alert("Veuillez contacter l'administrateur du site");
+      alert(`Veuillez contacter l'administrateur du site`);
       break;
   }
 };
