@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
     } else {
       next(); //Sinon, l'authentification est réussie et la suite du code peut s'exécuter
     }
-  } catch {
+  } catch(err) {
     res.status(401).json({
       error: new Error("Invalid request!"),
     });

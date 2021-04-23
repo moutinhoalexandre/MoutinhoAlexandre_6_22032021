@@ -1,6 +1,5 @@
 const Sauce = require("../models/sauce"); //On importe le modèle de sauce
 const fs = require("fs"); //système de gestion de fichier de Node
-const sauce = require("../models/sauce");
 
 //Créer une sauce
 exports.createSauce = (req, res, next) => {

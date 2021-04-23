@@ -39,7 +39,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 //Nettoie les champs utilisateurs des tentatives d'injection de code commençant par $ ou "."
-app.use(mongoSanitize())
+app.use(mongoSanitize());
 
 app.use('/images', express.static(path.join(__dirname, 'images')));//Permet de servir les fichiers statiques, présents dans le dossier images
 
